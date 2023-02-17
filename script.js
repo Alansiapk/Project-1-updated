@@ -22,8 +22,6 @@ async function loadData(lat,lng, query) {
 document.querySelector("#btnSearch").addEventListener("click", async function () {
     let searchValue = document.querySelector('#searchValue').value;
 
-    // console.log(START_POINT[0]);
-    // console.log(START_POINT[1])
 
         let searchResults = await loadData(START_POINT[0],START_POINT[1], searchValue);
         searchResultLayer.clearLayers();
