@@ -45,8 +45,30 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-//part 2
-function getRandomLatLng(map){
+//part 2 = 3 random marker
+let group1 = L.layerGroup();
+let group2 = L.layerGroup();
+let group3 = L.layerGroup();
 
+function getRandomLatLng(map){
+    const bounds = map.getBounds();
+    const southWest = bounds.getSouthWest();
+    const northEast = bounds.getNorthEast();
     
+    const latSpan = northEast.lat - southWest.lat;
+    const lngSpan = northEast.lng - southWest.lng;
+
+    const randomLat = Math.random() * latSpan + southWest.lat;
+    const randomLng = Math.random() * lngSpan + southWest.lng;
+
+    return [randomLat, randomLng];
 }
+ 
+getRandomLatLng(map)
+let group = L.layerGroup();
+
+for (let i = 0; i < 5; i++){
+    let coordinate = getRandomLatLng(map);
+    L.marker(coordinate).addTo(group1);
+}
+group1.addTo(map);
