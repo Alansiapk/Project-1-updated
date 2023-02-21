@@ -53,14 +53,16 @@ async function main() {
         },
     });
   
+    var MRTLayer = L.layerGroup();
   
-
-    for (let MRT of mrtResponse.data) {
-        let marker = L.marker(MRT.coordinates);
+    // console.log(mrtResponse);
+    for (let MRT of mrtResponse.data.results) {
+        let marker = L.marker([MRT.geocodes.main.latitude, MRT.geocodes.main.longitude]);
         marker.bindPopup(`<h1>${MRT.name}</h1>`);
+        // maps.
         marker.addTo(MRTLayer);
     }
-    MRTLayer.addTo(map);
+    map.addLayer(MRTLayer);
 
     //restaurant
     let restaurantResponse = await axios.get(foursquare.URL, {
@@ -76,8 +78,8 @@ async function main() {
         },
     });
     let restaurantLayer = L.layerGroup();
-    for (let restaurant of restaurantResponse.data) {
-        let circle = L.circle(restaurant.coordinates,{
+    for (let restaurant of restaurantResponse.data.results) {
+        let circle = L.circle([restaurant.geocodes.main.latitude,restaurant.geocodes.main.longitude],{
             color: "red",
             fillColor: "red",
             radius: 200,
@@ -101,8 +103,9 @@ async function main() {
             "limit": 50,
         },
     });
-    for (let gym of gymResponse.data) {
-        let marker = L.marker(gym.coordinates, {
+    let gymLayer = L.layerGroup();
+    for (let gym of gymResponse.data.results) {
+        let marker = L.marker([gym.geocodes.main.latitude,gym.geocodes.main.longitude], {
             color: "green",
             fillColor: "green",
             radius: 200,
@@ -114,50 +117,43 @@ async function main() {
     gymLayer.addTo(map);
 
      //bar
-     let barResponse = await axios.get(foursquare.URL, {
-        "headers": {
-            "Accept": "application/json",
-            "Authorization": foursquare.API_KEY
-        },
-        "params": {
-            "ll": foursquare.centerpoint,
-            "categories": foursquare.categories.bar,
-            "radius": 30000,
-            "limit": 50,
-        },
-    });
-    for (let bar of barResponse.data) {
-        let marker = L.marker(bar.coordinates, {
-            color: "green",
-            fillColor: "green",
-            radius: 200,
-            fillOpacity:0.5
-        });
-        marker.bindPopup(`<h1>${bar.name}</h1>`);
-        marker.addTo(barLayer);
-    }
-    barLayer.addTo(map);
+    //  let barResponse = await axios.get(foursquare.URL, {
+    //     "headers": {
+    //         "Accept": "application/json",
+    //         "Authorization": foursquare.API_KEY
+    //     },
+    //     "params": {
+    //         "ll": foursquare.centerpoint,
+    //         "categories": foursquare.categories.bar,
+    //         "radius": 30000,
+    //         "limit": 50,
+    //     },
+    // });
+    // let barLayer = L.layerGroup();
+    // for (let bar of barResponse.data.results) {
+    //     let marker = L.marker([bar.geocodes.main.latitude,bar.geocodes.main.longitude], {
+    //         color: "green",
+    //         fillColor: "green",
+    //         radius: 200,
+    //         fillOpacity:0.5
+    //     });
+    //     marker.bindPopup(`<h1>${bar.name}</h1>`);
+    //     marker.addTo(barLayer);
+    // }
+    // barLayer.addTo(map);
 
     // create the base layers and the overlay
     let overlays = {
         'MRT': MRTLayer,
         'Restaurant': restaurantLayer,
         'Gym': gymLayer,
-        'bar': barLayer
+        // 'bar': barLayer
     }
     
     L.control.layers({}, overlays).addTo(map);
 
-}
-main();
-
-
-// document.querySelector("#btnSearch").addEventListener("click", async function () {
-//     let searchValue = document.querySelector('#searchValue').value;
-
-
     // let searchResults = await mrtResponse(singapore[0], singapore[1], searchValue);
-    // searchResultLayer.clearLayers();
+    // // searchResultLayer.clearLayers();
     // console.log(searchResults)
 
 //     //restaurant
@@ -170,9 +166,30 @@ main();
 //     }
 
 
+    // alert (JSON.stringify(searchResults));
     // MRT
     let searchPoint = [searchResults.results[0].geocodes.main.latitude, searchResults.results[0].geocodes.main.longitude]
     map.flyTo(searchPoint, 15)
+}
+main();
+
+
+// Adds a marker to the map.
+function addMarker(location, map) {
+    // Add the marker at the clicked location, and add the next-available label
+    // from the array of alphabetical characters.
+    new google.maps.Marker({
+      position: location,
+      label: labels[labelIndex++ % labels.length],
+      map: map,
+    });
+  }
+
+
+// document.querySelector("#btnSearch").addEventListener("click", async function () {
+//     let searchValue = document.querySelector('#searchValue').value;
+
+
 
 //     let searchResults2 = await loadMrtData(searchPoint[0], searchPoint[1], searchValue);
 //     // searchResultLayer.clearLayers();
