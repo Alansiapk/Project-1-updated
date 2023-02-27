@@ -237,7 +237,125 @@ async function main() {
         barMarker.bindPopup(`<h1>${bar.name}</h1>`);
         barMarker.addTo(barLayer);
     }
+
+
+
+//Weather forcast
+
+const sunnyIcon = L.icon({
+    iconUrl: 'img/sunny.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const cloudyIcon = L.icon({
+    iconUrl: 'img/cloudy.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const cloudyDayIcon = L.icon({
+    iconUrl: 'img/cloudyday.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const nightIcon = L.icon({
+    iconUrl: 'img/night.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const cloudyNightIcon = L.icon({
+    iconUrl: 'img/cloudnight.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+const drizzleIcon = L.icon({
+    iconUrl: 'img/drizzle.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const showerIcon = L.icon({
+    iconUrl: 'img/shower.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const thunderIcon = L.icon({
+    iconUrl: 'img/thunder.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+
+
+let weatherOverlay = L.layerGroup().addTo(map);
+let response = await axios.get(weatherAPIURL);
+
+// The area_metadata field in the response provides longitude/latitude information for the areas. You can use that to place the forecasts on a map.
+let weatherAreaCordinates = response.data.area_metadata;
+
+console.log("test weather result:",(response));
+let weatherArray = [];
+for (let weather of response.data.items[0].forecasts){
+    weatherArray.push(weather.forecast);
 }
+
+for (let i = 0; i < weatherArray.length; i++){
+    weatherAreaCordinates[i].forecast = weatherArray[i];
+}
+
+
+for (let area of weatherAreaCordinates){
+    //a;ert(JSON.stringify(area));
+    let lat = area.label_location.latitude;
+    let lng = area.label_location.longitude;
+
+//http://www.weather.gov.sg/forecasting-2/
+if (area.forecast == 'Cloudy'){
+    L.marker([lat,lng], {icon:cloudyIcon}).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Fair & Warm' || area.forecast == 'Fair (Day)') {
+    L.marker([lat, lng], { icon: sunnyIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Partly Cloudy (Day)') {
+    L.marker([lat, lng], { icon: cloudyDayIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Partly Cloudy (Night)') {
+    L.marker([lat, lng], { icon: cloudyNightIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Fair (Night)') {
+    L.marker([lat, lng], { icon: nightIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Light Showers' || area.forecast == 'Light Rain') {
+    L.marker([lat, lng], { icon: drizzleIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Showers' || area.forecast == 'Moderate Rain') {
+    L.marker([lat, lng], { icon: showerIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Thundery Showers' || area.forecast == 'Heavy Thundery Showers') {
+    L.marker([lat, lng], { icon: thunderIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+}
+}
+
 
 document.querySelector("#btnSearch").addEventListener("click", async function () {
     let searchValue = document.querySelector('#searchValue').value;
@@ -352,126 +470,6 @@ document.querySelector("#btnSearch").addEventListener("click", async function ()
     foursquare.centerpoint = searchPoint;
     // main();
 
-//Weather forcast
-
-const sunnyIcon = L.icon({
-    iconUrl: 'img/sunny.png',
-    iconSize: [45,45],
-    iconAnchor:[23,45],
-    popupAnchor: [0,0]
-})
-
-const cloudyIcon = L.icon({
-    iconUrl: 'img/cloudy.png',
-    iconSize: [45,45],
-    iconAnchor:[23,45],
-    popupAnchor: [0,0]
-})
-
-const cloudyDayIcon = L.icon({
-    iconUrl: 'img/cloudyday.png',
-    iconSize: [45,45],
-    iconAnchor:[23,45],
-    popupAnchor: [0,0]
-})
-
-const nightIcon = L.icon({
-    iconUrl: 'img/night.png',
-    iconSize: [45,45],
-    iconAnchor:[23,45],
-    popupAnchor: [0,0]
-})
-
-const cloudyNightIcon = L.icon({
-    iconUrl: 'img/cloudnight.png',
-    iconSize: [45,45],
-    iconAnchor:[23,45],
-    popupAnchor: [0,0]
-})
-const drizzleIcon = L.icon({
-    iconUrl: 'img/drizzle.png',
-    iconSize: [45,45],
-    iconAnchor:[23,45],
-    popupAnchor: [0,0]
-})
-
-const showerIcon = L.icon({
-    iconUrl: 'img/shower.png',
-    iconSize: [45,45],
-    iconAnchor:[23,45],
-    popupAnchor: [0,0]
-})
-
-const thunderIcon = L.icon({
-    iconUrl: 'img/thunder.png',
-    iconSize: [45,45],
-    iconAnchor:[23,45],
-    popupAnchor: [0,0]
-})
-
-
-
-let weatherOverlay = L.layerGroup().addTo(map);
-let response = await axios.get(weatherAPIURL);
-
-// The area_metadata field in the response provides longitude/latitude information for the areas. You can use that to place the forecasts on a map.
-let weatherAreaCordinates = response.data.area_metadata;
-
-let weatherArray = [];
-for (let weather of response.data.items[0].forecast){
-    weatherArray.push(weather.forecast);
-}
-
-for (let i = 0; i < weatherArray.length; i++){
-    weatherAreaCordinates[i].forecast = weatherArray[i];
-}
-
-
-for (let area of weatherAreaCordinates){
-    let lat = area.label_location.latitude;
-    let lng = area.label_location.longitude;git
-
-//http://www.weather.gov.sg/forecasting-2/
-if (area.forecast == 'Cloudy'){
-    L.marker([lat,lng], {icon:cloudyIcon}).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
-}
-
-if (area.forecast == 'Fair & Warm' || area.forecast == 'Fair (Day)') {
-    L.marker([lat, lng], { icon: sunnyIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
-}
-
-if (area.forecast == 'Partly Cloudy (Day)') {
-    L.marker([lat, lng], { icon: cloudyDayIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
-}
-
-if (area.forecast == 'Partly Cloudy (Night)') {
-    L.marker([lat, lng], { icon: cloudyNightIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
-}
-
-if (area.forecast == 'Fair (Night)') {
-    L.marker([lat, lng], { icon: nightIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
-}
-
-if (area.forecast == 'Light Showers' || area.forecast == 'Light Rain') {
-    L.marker([lat, lng], { icon: drizzleIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
-}
-
-if (area.forecast == 'Showers' || area.forecast == 'Moderate Rain') {
-    L.marker([lat, lng], { icon: showerIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
-}
-
-if (area.forecast == 'Thundery Showers' || area.forecast == 'Heavy Thundery Showers') {
-    L.marker([lat, lng], { icon: thunderIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
-}
-}
-
-
-
 });
 
-
 main();
-
-
-
-
