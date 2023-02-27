@@ -351,10 +351,65 @@ document.querySelector("#btnSearch").addEventListener("click", async function ()
     map.flyTo(searchPoint, 17);
     foursquare.centerpoint = searchPoint;
     // main();
-});
-
 
 //Weather forcast
+
+const sunnyIcon = L.icon({
+    iconUrl: 'img/sunny.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const cloudyIcon = L.icon({
+    iconUrl: 'img/cloudy.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const cloudyDayIcon = L.icon({
+    iconUrl: 'img/cloudyday.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const nightIcon = L.icon({
+    iconUrl: 'img/night.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const cloudyNightIcon = L.icon({
+    iconUrl: 'img/cloudnight.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+const drizzleIcon = L.icon({
+    iconUrl: 'img/drizzle.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const showerIcon = L.icon({
+    iconUrl: 'img/shower.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const thunderIcon = L.icon({
+    iconUrl: 'img/thunder.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+
 
 let weatherOverlay = L.layerGroup().addTo(map);
 let response = await axios.get(weatherAPIURL);
@@ -374,43 +429,49 @@ for (let i = 0; i < weatherArray.length; i++){
 
 for (let area of weatherAreaCordinates){
     let lat = area.label_location.latitude;
-    let lng = area.label_location.longitude;
+    let lng = area.label_location.longitude;git
 
 //http://www.weather.gov.sg/forecasting-2/
 if (area.forecast == 'Cloudy'){
-    L.marker([lat,lng], {icon:cloudy}).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+    L.marker([lat,lng], {icon:cloudyIcon}).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
 }
 
 if (area.forecast == 'Fair & Warm' || area.forecast == 'Fair (Day)') {
-    L.marker([lat, lng], { icon: sunny }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+    L.marker([lat, lng], { icon: sunnyIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
 }
 
 if (area.forecast == 'Partly Cloudy (Day)') {
-    L.marker([lat, lng], { icon: cloudyDay }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+    L.marker([lat, lng], { icon: cloudyDayIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
 }
 
 if (area.forecast == 'Partly Cloudy (Night)') {
-    L.marker([lat, lng], { icon: cloudyNight }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+    L.marker([lat, lng], { icon: cloudyNightIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
 }
 
 if (area.forecast == 'Fair (Night)') {
-    L.marker([lat, lng], { icon: night }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+    L.marker([lat, lng], { icon: nightIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
 }
 
 if (area.forecast == 'Light Showers' || area.forecast == 'Light Rain') {
-    L.marker([lat, lng], { icon: drizzle }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+    L.marker([lat, lng], { icon: drizzleIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
 }
 
 if (area.forecast == 'Showers' || area.forecast == 'Moderate Rain') {
-    L.marker([lat, lng], { icon: showers }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+    L.marker([lat, lng], { icon: showerIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
 }
 
 if (area.forecast == 'Thundery Showers' || area.forecast == 'Heavy Thundery Showers') {
-    L.marker([lat, lng], { icon: thunder }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+    L.marker([lat, lng], { icon: thunderIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
 }
 }
+
+
+
+});
 
 
 main();
+
+
 
 
