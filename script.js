@@ -22,9 +22,7 @@ function getRandomLatLng(map) {
     return [randomLat, randomLng];
 }
 
-// const FOURSQUARE_API_KEY = "fsq331OlQJLkuEtpOYZ/Wc3NNCUSfvlqMjdOpXhmXzYtnsg="
-// const fourSquareURL = "https://api.foursquare.com/v3/places/search"
-
+const weatherAPIURL = 'https://api.data.gov.sg/v1/environment/2-hour-weather-forecast';
 const foursquare = {
     API_KEY: "fsq331OlQJLkuEtpOYZ/Wc3NNCUSfvlqMjdOpXhmXzYtnsg=",
     URL: "https://api.foursquare.com/v3/places/search",
@@ -34,11 +32,121 @@ const foursquare = {
         restaurant: 13065,
         bar: 13003
     },
-    centerpoint: "1.3521,103.8198"
+    centerpoint: singapore,
+
 }
 
+// create layers for each category change to markercluster group
+//google search = leaftlet marker cluster
+// let restaurantLayer = L.layerGroup()
+// let MRTLayer = L.markerClusterGroup({
+//     iconCreateFunction: function(cluster) {
+//         return L.divIcon({
+//             html: `<div class="customMarkerClusterIcon">
+//             ${cluster.getChildCount()}
+//             </div>`
+//         });
+//     }
+// });
+let MRTLayer = L.markerClusterGroup({
+    iconCreateFunction: function(cluster){
+        return L.divIcon({
+            html:`<div class="customMRTMarkerClusterIcon">
+            ${cluster.getChildCount()}
+            </div>`
+        })
+    }
+});
+let restaurantLayer = L.markerClusterGroup({
+    iconCreateFunction: function(cluster){
+        return L.divIcon({
+            html:`<div class="customRestaurantMarkerClusterIcon">
+            ${cluster.getChildCount()}
+            </div>`
+        })
+    }
+});
+let gymLayer = L.markerClusterGroup({
+    iconCreateFunction: function(cluster){
+        return L.divIcon({
+            html:`<div class="customGymMarkerClusterIcon">
+            ${cluster.getChildCount()}
+            </div>`
+        })
+    }
+});
+let barLayer = L.markerClusterGroup({
+    iconCreateFunction: function(cluster){
+        return L.divIcon({
+            html:`<div class="customBarMarkerClusterIcon">
+            ${cluster.getChildCount()}
+            </div>`
+        })
+    }
+});
+
+let searchRadiusLayer = L.layerGroup().addTo(map);
+
+
+// add the layers to the map
+// map.addLayer(MRTLayer);
+MRTLayer.addTo(map);
+restaurantLayer.addTo(map);
+gymLayer.addTo(map);
+barLayer.addTo(map);
+// weatherOverLay.addTo(map);
+
+// create the base layers and the overlay
+let overlays = {
+    'MRT': MRTLayer,
+    'Restaurant': restaurantLayer,
+    'Gym': gymLayer,
+    'Bar': barLayer,
+    
+}
+
+// add overlay to map
+L.control.layers({}, overlays).addTo(map);
+
+//ICON
+const restaurantIcon = L.icon({
+    iconUrl: 'img/restaurant.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const mrtIcon = L.icon({
+    iconUrl: 'img/mrt.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+const gymIcon = L.icon({
+    iconUrl: 'img/gym.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const barIcon = L.icon({
+    iconUrl: 'img/bar.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
 
 async function main() {
+
+    MRTLayer.clearLayers();
+    restaurantLayer.clearLayers();
+    gymLayer.clearLayers();
+    barLayer.clearLayers();
+    searchRadiusLayer.clearLayers();
+
+    // console.log('search point=============');
+    console.log(foursquare.centerpoint);
+
     //MRT
     let mrtResponse = await axios.get(foursquare.URL, {
         "headers": {
@@ -46,23 +154,21 @@ async function main() {
             "Authorization": foursquare.API_KEY
         },
         "params": {
-            "ll": foursquare.centerpoint,
+            "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
             "categories": foursquare.categories.mrt,
-            "radius": 30000,
+            "radius": 40000,
             "limit": 50,
+            "sort": "distance"
         },
     });
-  
-    var MRTLayer = L.layerGroup();
-  
-    // console.log(mrtResponse);
+    console.log("this is data ", mrtResponse)
+
     for (let MRT of mrtResponse.data.results) {
-        let marker = L.marker([MRT.geocodes.main.latitude, MRT.geocodes.main.longitude]);
-        marker.bindPopup(`<h1>${MRT.name}</h1>`);
-        // maps.
+        let marker = L.marker([MRT.geocodes.main.latitude, MRT.geocodes.main.longitude],{icon:mrtIcon});
+        marker.bindPopup(`<h1>${MRT.name}</h1>`); 
+        //maps.
         marker.addTo(MRTLayer);
     }
-    map.addLayer(MRTLayer);
 
     //restaurant
     let restaurantResponse = await axios.get(foursquare.URL, {
@@ -71,24 +177,21 @@ async function main() {
             "Authorization": foursquare.API_KEY
         },
         "params": {
-            "ll": foursquare.centerpoint,
+            "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
             "catagories": foursquare.categories.restaurant,
-            "radius": 30000,
-            "limit": 5,
-        },
+            "radius": 40000,
+            "limit": 25,
+            "sort": "distance"
+        }
     });
-    let restaurantLayer = L.layerGroup();
     for (let restaurant of restaurantResponse.data.results) {
-        let circle = L.circle([restaurant.geocodes.main.latitude,restaurant.geocodes.main.longitude],{
-            color: "red",
-            fillColor: "red",
-            radius: 200,
-            fillOpacity:0.5
-        });
-        circle.bindPopup(`<h1>${restaurant.name}</h1>`)
-        circle.addTo(restaurantLayer);
+        let restaurantMarker = L.marker([restaurant.geocodes.main.latitude, restaurant.geocodes.main.longitude],{icon: restaurantIcon});
+           
+        restaurantMarker.bindPopup(`<h1>${restaurant.name}</h1>`)
+        restaurantMarker.addTo(restaurantLayer);
+
     }
-    restaurantLayer.addTo(map);
+    
 
     //gym
     let gymResponse = await axios.get(foursquare.URL, {
@@ -97,173 +200,279 @@ async function main() {
             "Authorization": foursquare.API_KEY
         },
         "params": {
-            "ll": foursquare.centerpoint,
+            "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
             "categories": foursquare.categories.gym,
+            "radius": 40000,
+            "limit": 25,
+            "sort": "distance"
+        }
+    });
+    
+    for (let gym of gymResponse.data.results) {
+        let gymMarker = L.marker([gym.geocodes.main.latitude, gym.geocodes.main.longitude], {icon:gymIcon});
+           
+        gymMarker.bindPopup(`<h1>${gym.name}</h1>`);
+        gymMarker.addTo(gymLayer);
+    }
+
+    //bar
+    let barResponse = await axios.get(foursquare.URL, {
+        "headers": {
+            "Accept": "application/json",
+            "Authorization": foursquare.API_KEY
+        },
+        "params": {
+            "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
+            "categories": foursquare.categories.bar,
+            "radius": 40000,
+            "limit": 25,
+            "sort": "distance"
+        }
+    });
+
+
+    for (let bar of barResponse.data.results) {
+        let barMarker = L.marker([bar.geocodes.main.latitude, bar.geocodes.main.longitude], {icon:barIcon});
+       
+        barMarker.bindPopup(`<h1>${bar.name}</h1>`);
+        barMarker.addTo(barLayer);
+    }
+}
+
+document.querySelector("#btnSearch").addEventListener("click", async function () {
+    let searchValue = document.querySelector('#searchValue').value;
+    console.log(searchValue);
+
+    // search mrt result
+    let searchResponse = await axios.get(foursquare.URL, {
+        "headers": {
+            "Accept": "application/json",
+            "Authorization": foursquare.API_KEY
+        },
+        "params": {
+            "ll": singapore[0] + ',' + singapore[1],
+            // "categories": foursquare.categories.mrt,
             "radius": 30000,
-            "limit": 50,
+            "limit": 1,
+            "query": searchValue
         },
     });
-    let gymLayer = L.layerGroup();
-    for (let gym of gymResponse.data.results) {
-        let marker = L.marker([gym.geocodes.main.latitude,gym.geocodes.main.longitude], {
-            color: "green",
-            fillColor: "green",
-            radius: 200,
-            fillOpacity:0.5
-        });
-        marker.bindPopup(`<h1>${gym.name}</h1>`);
-        marker.addTo(gymLayer);
+
+    console.log(searchResponse.data);
+    
+
+    let searchPoint = [searchResponse.data.results[0].geocodes.main.latitude, searchResponse.data.results[0].geocodes.main.longitude]
+    
+    // call bar, restaurant, gym apis using searchpoint
+    //restaurant
+    let restaurantRequest = axios.get(foursquare.URL, {
+        "headers": {
+            "Accept": "application/json",
+            "Authorization": foursquare.API_KEY
+        },
+        "params": {
+            "ll": searchPoint.join(','),
+            "catagories": foursquare.categories.restaurant,
+            "radius": 1000, // can allow user to choose how big the search radius around selected MRT
+            "limit": 10,
+            "sort": "distance"
+        }
+    });
+
+    //bar
+    let barRequest = axios.get(foursquare.URL, {
+        "headers": {
+            "Accept": "application/json",
+            "Authorization": foursquare.API_KEY
+        },
+        "params": {
+            "ll": searchPoint.join(','),
+            "categories": foursquare.categories.bar,
+            "radius": 1000,
+            "limit": 10,
+            "sort": "distance"
+        }
+    });
+
+    //gym
+    let gymRequest = axios.get(foursquare.URL, {
+        "headers": {
+            "Accept": "application/json",
+            "Authorization": foursquare.API_KEY
+        },
+        "params": {
+            "ll": searchPoint.join(','),
+            "categories": foursquare.categories.gym,
+            "radius": 1000,
+            "limit": 10,
+            "sort": "distance"
+        }
+    });
+
+    let restaurantResponse = await restaurantRequest;
+    let barResponse = await barRequest;
+    let gymResponse =  await gymRequest;
+
+
+    for (let restaurant of restaurantResponse.data.results) {
+        let restaurantMarker = L.marker([restaurant.geocodes.main.latitude, restaurant.geocodes.main.longitude],{icon: restaurantIcon});
+           
+        restaurantMarker.bindPopup(`<h1>${restaurant.name}</h1>`)
+        restaurantMarker.addTo(restaurantLayer);
     }
-    gymLayer.addTo(map);
 
-     //bar
-    //  let barResponse = await axios.get(foursquare.URL, {
-    //     "headers": {
-    //         "Accept": "application/json",
-    //         "Authorization": foursquare.API_KEY
-    //     },
-    //     "params": {
-    //         "ll": foursquare.centerpoint,
-    //         "categories": foursquare.categories.bar,
-    //         "radius": 30000,
-    //         "limit": 50,
-    //     },
-    // });
-    // let barLayer = L.layerGroup();
-    // for (let bar of barResponse.data.results) {
-    //     let marker = L.marker([bar.geocodes.main.latitude,bar.geocodes.main.longitude], {
-    //         color: "green",
-    //         fillColor: "green",
-    //         radius: 200,
-    //         fillOpacity:0.5
-    //     });
-    //     marker.bindPopup(`<h1>${bar.name}</h1>`);
-    //     marker.addTo(barLayer);
-    // }
-    // barLayer.addTo(map);
+    for (let bar of barResponse.data.results) {
+        let barMarker = L.marker([bar.geocodes.main.latitude, bar.geocodes.main.longitude], {icon:barIcon});
+       
+        barMarker.bindPopup(`<h1>${bar.name}</h1>`);
+        barMarker.addTo(barLayer);
+    }
 
-    // create the base layers and the overlay
-    let overlays = {
-        'MRT': MRTLayer,
-        'Restaurant': restaurantLayer,
-        'Gym': gymLayer,
-        // 'bar': barLayer
+    // let testLayer = L.layerGroup().addTo(map);
+    for (let gym of gymResponse.data.results) {
+        let gymMarker = L.marker([gym.geocodes.main.latitude, gym.geocodes.main.longitude], {icon:gymIcon});
+
+        gymMarker.bindPopup(`<h1>${gym.name}</h1>`);
+        gymMarker.addTo(gymLayer);
+        // gymMarker.addTo(searchGymLayer);
     }
     
-    L.control.layers({}, overlays).addTo(map);
+    // Display search radius
+    L.circle(searchPoint, {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 500 // change according to user selected radius
+    }).addTo(searchRadiusLayer);
 
-    // let searchResults = await mrtResponse(singapore[0], singapore[1], searchValue);
-    // // searchResultLayer.clearLayers();
-    // console.log(searchResults)
+    console.log(searchPoint);
+    console.log(barResponse.data.results);
+    console.log(restaurantResponse.data.results);
+    console.log(gymResponse.data.results);
+    map.flyTo(searchPoint, 17);
+    foursquare.centerpoint = searchPoint;
+    // main();
 
-//     //restaurant
-//     for (let result of searchResults.results) {
-//         let coordinate = [result.geocodes.main.latitude, result.geocodes.main.longitude]
-//         let marker = L.marker(coordinate).addTo(searchResultLayer);
-//         marker.bindPopup(`<h1>${result.name}<h1>
-//                 <h2>${result.location.formatted_address}</h2>
-//                 `);
-//     }
+//Weather forcast
+
+const sunnyIcon = L.icon({
+    iconUrl: 'img/sunny.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const cloudyIcon = L.icon({
+    iconUrl: 'img/cloudy.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const cloudyDayIcon = L.icon({
+    iconUrl: 'img/cloudyday.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const nightIcon = L.icon({
+    iconUrl: 'img/night.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const cloudyNightIcon = L.icon({
+    iconUrl: 'img/cloudnight.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+const drizzleIcon = L.icon({
+    iconUrl: 'img/drizzle.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const showerIcon = L.icon({
+    iconUrl: 'img/shower.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
+
+const thunderIcon = L.icon({
+    iconUrl: 'img/thunder.png',
+    iconSize: [45,45],
+    iconAnchor:[23,45],
+    popupAnchor: [0,0]
+})
 
 
-    // alert (JSON.stringify(searchResults));
-    // MRT
-    let searchPoint = [searchResults.results[0].geocodes.main.latitude, searchResults.results[0].geocodes.main.longitude]
-    map.flyTo(searchPoint, 15)
+
+let weatherOverlay = L.layerGroup().addTo(map);
+let response = await axios.get(weatherAPIURL);
+
+// The area_metadata field in the response provides longitude/latitude information for the areas. You can use that to place the forecasts on a map.
+let weatherAreaCordinates = response.data.area_metadata;
+
+let weatherArray = [];
+for (let weather of response.data.items[0].forecast){
+    weatherArray.push(weather.forecast);
 }
+
+for (let i = 0; i < weatherArray.length; i++){
+    weatherAreaCordinates[i].forecast = weatherArray[i];
+}
+
+
+for (let area of weatherAreaCordinates){
+    let lat = area.label_location.latitude;
+    let lng = area.label_location.longitude;git
+
+//http://www.weather.gov.sg/forecasting-2/
+if (area.forecast == 'Cloudy'){
+    L.marker([lat,lng], {icon:cloudyIcon}).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Fair & Warm' || area.forecast == 'Fair (Day)') {
+    L.marker([lat, lng], { icon: sunnyIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Partly Cloudy (Day)') {
+    L.marker([lat, lng], { icon: cloudyDayIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Partly Cloudy (Night)') {
+    L.marker([lat, lng], { icon: cloudyNightIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Fair (Night)') {
+    L.marker([lat, lng], { icon: nightIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Light Showers' || area.forecast == 'Light Rain') {
+    L.marker([lat, lng], { icon: drizzleIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Showers' || area.forecast == 'Moderate Rain') {
+    L.marker([lat, lng], { icon: showerIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Thundery Showers' || area.forecast == 'Heavy Thundery Showers') {
+    L.marker([lat, lng], { icon: thunderIcon }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+}
+
+
+
+});
+
+
 main();
 
 
-// Adds a marker to the map.
-function addMarker(location, map) {
-    // Add the marker at the clicked location, and add the next-available label
-    // from the array of alphabetical characters.
-    new google.maps.Marker({
-      position: location,
-      label: labels[labelIndex++ % labels.length],
-      map: map,
-    });
-  }
 
-
-// document.querySelector("#btnSearch").addEventListener("click", async function () {
-//     let searchValue = document.querySelector('#searchValue').value;
-
-
-
-//     let searchResults2 = await loadMrtData(searchPoint[0], searchPoint[1], searchValue);
-//     // searchResultLayer.clearLayers();
-//     console.log(searchResults2)
-
-//     for (let result of searchResults2.results) {
-//         let coordinate = [result.geocodes.main.latitude, result.geocodes.main.longitude]
-//         let marker = L.marker(coordinate).addTo(searchResultLayer);
-//         marker.bindPopup(`<h1>${result.name}<h1>
-//                 <h2>${result.location.formatted_address}</h2>
-//                 `);
-//     }
-
-
-// });
-
-
-// let searchResultLayer = L.layerGroup();
-// searchResultLayer.addTo(map)
-
-
-// //part 2 = 3 random marker
-// //group 1
-
-
-
-// getRandomLatLng(map)
-// let group1 = L.layerGroup();
-
-// for (let i = 0; i < 5; i++) {
-//     let coordinate = getRandomLatLng(map);
-//     L.marker(coordinate).addTo(group1);
-// }
-// group1.addTo(map);
-
-// //layer control
-// let circleGroup = L.layerGroup();
-// for (let i = 0; i < 5; i++) {
-//     let coordinate = getRandomLatLng(map);
-//     let circle = L.circle(coordinate, {
-//         'color': 'green',
-//         'fillColor': 'green',
-//         'fillOpacity': 0.5,
-//         'radius': 250
-//     });
-//     circle.addTo(circleGroup);
-// }
-
-// circleGroup.addTo(map);
-
-// let redCircleGroup = L.layerGroup();
-// for (let i = 0; i < 5; i++) {
-//     let coordinate = getRandomLatLng(map);
-//     let circle = L.circle(coordinate, {
-//         'color': 'red',
-//         'fillColor': 'red',
-//         'fillOpacity': 0.5,
-//         'radius': 250
-//     });
-//     circle.addTo(redCircleGroup);
-// }
-
-// redCircleGroup.addTo(map);
-
-// //toggle layer
-// let baseLayers = {
-//     'Markers': group1,
-
-// };
-
-// let overlays = {
-//     'MRT': redCircleGroup,
-//     'Restaurant': circleGroup
-// }
-
-// L.control.layers(baseLayers, overlays).addTo(map);
 
