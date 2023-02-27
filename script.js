@@ -22,6 +22,7 @@ function getRandomLatLng(map) {
     return [randomLat, randomLng];
 }
 
+const weatherAPIURL = 'https://api.data.gov.sg/v1/environment/2-hour-weather-forecast';
 const foursquare = {
     API_KEY: "fsq331OlQJLkuEtpOYZ/Wc3NNCUSfvlqMjdOpXhmXzYtnsg=",
     URL: "https://api.foursquare.com/v3/places/search",
@@ -47,13 +48,45 @@ const foursquare = {
 //         });
 //     }
 // });
-let MRTLayer = L.markerClusterGroup();
-let restaurantLayer = L.layerGroup();
-let gymLayer = L.layerGroup();
-let barLayer = L.layerGroup();
+let MRTLayer = L.markerClusterGroup({
+    iconCreateFunction: function(cluster){
+        return L.divIcon({
+            html:`<div class="customMRTMarkerClusterIcon">
+            ${cluster.getChildCount()}
+            </div>`
+        })
+    }
+});
+let restaurantLayer = L.markerClusterGroup({
+    iconCreateFunction: function(cluster){
+        return L.divIcon({
+            html:`<div class="customRestaurantMarkerClusterIcon">
+            ${cluster.getChildCount()}
+            </div>`
+        })
+    }
+});
+let gymLayer = L.markerClusterGroup({
+    iconCreateFunction: function(cluster){
+        return L.divIcon({
+            html:`<div class="customGymMarkerClusterIcon">
+            ${cluster.getChildCount()}
+            </div>`
+        })
+    }
+});
+let barLayer = L.markerClusterGroup({
+    iconCreateFunction: function(cluster){
+        return L.divIcon({
+            html:`<div class="customBarMarkerClusterIcon">
+            ${cluster.getChildCount()}
+            </div>`
+        })
+    }
+});
 
 let searchRadiusLayer = L.layerGroup().addTo(map);
-let searchGymLayer = L.layerGroup().addTo(map);
+
 
 // add the layers to the map
 // map.addLayer(MRTLayer);
@@ -61,13 +94,15 @@ MRTLayer.addTo(map);
 restaurantLayer.addTo(map);
 gymLayer.addTo(map);
 barLayer.addTo(map);
+// weatherOverLay.addTo(map);
 
 // create the base layers and the overlay
 let overlays = {
     'MRT': MRTLayer,
     'Restaurant': restaurantLayer,
     'Gym': gymLayer,
-    'Bar': barLayer
+    'Bar': barLayer,
+    
 }
 
 // add overlay to map
@@ -145,7 +180,7 @@ async function main() {
             "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
             "catagories": foursquare.categories.restaurant,
             "radius": 40000,
-            "limit": 50,
+            "limit": 25,
             "sort": "distance"
         }
     });
@@ -168,7 +203,7 @@ async function main() {
             "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
             "categories": foursquare.categories.gym,
             "radius": 40000,
-            "limit": 50,
+            "limit": 25,
             "sort": "distance"
         }
     });
@@ -190,7 +225,7 @@ async function main() {
             "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
             "categories": foursquare.categories.bar,
             "radius": 40000,
-            "limit": 50,
+            "limit": 25,
             "sort": "distance"
         }
     });
@@ -306,7 +341,7 @@ document.querySelector("#btnSearch").addEventListener("click", async function ()
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
-        radius: 1000 // change according to user selected radius
+        radius: 500 // change according to user selected radius
     }).addTo(searchRadiusLayer);
 
     console.log(searchPoint);
@@ -317,6 +352,64 @@ document.querySelector("#btnSearch").addEventListener("click", async function ()
     foursquare.centerpoint = searchPoint;
     // main();
 });
+
+
+//Weather forcast
+
+let weatherOverlay = L.layerGroup().addTo(map);
+let response = await axios.get(weatherAPIURL);
+
+// The area_metadata field in the response provides longitude/latitude information for the areas. You can use that to place the forecasts on a map.
+let weatherAreaCordinates = response.data.area_metadata;
+
+let weatherArray = [];
+for (let weather of response.data.items[0].forecast){
+    weatherArray.push(weather.forecast);
+}
+
+for (let i = 0; i < weatherArray.length; i++){
+    weatherAreaCordinates[i].forecast = weatherArray[i];
+}
+
+
+for (let area of weatherAreaCordinates){
+    let lat = area.label_location.latitude;
+    let lng = area.label_location.longitude;
+
+//http://www.weather.gov.sg/forecasting-2/
+if (area.forecast == 'Cloudy'){
+    L.marker([lat,lng], {icon:cloudy}).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Fair & Warm' || area.forecast == 'Fair (Day)') {
+    L.marker([lat, lng], { icon: sunny }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Partly Cloudy (Day)') {
+    L.marker([lat, lng], { icon: cloudyDay }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Partly Cloudy (Night)') {
+    L.marker([lat, lng], { icon: cloudyNight }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Fair (Night)') {
+    L.marker([lat, lng], { icon: night }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Light Showers' || area.forecast == 'Light Rain') {
+    L.marker([lat, lng], { icon: drizzle }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Showers' || area.forecast == 'Moderate Rain') {
+    L.marker([lat, lng], { icon: showers }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+
+if (area.forecast == 'Thundery Showers' || area.forecast == 'Heavy Thundery Showers') {
+    L.marker([lat, lng], { icon: thunder }).bindPopup(`<h5>${area.name}</h5>${area.forecast}`).addTo(weatherOverlay)
+}
+}
+
 
 main();
 
