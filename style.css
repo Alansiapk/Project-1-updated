@@ -23,50 +23,63 @@ html {
   height: 100vh;
 }
 
+
+#map-container{
+  position:relative;
+}
+
+#singaporeLogo {
+  position: absolute;
+  z-index: 314159;
+  width: 60px;
+  top: -5px;
+  left: 60px;
+}
+
 .customMRTMarkerClusterIcon{
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 50px;
-  height: 50px;
-  width: 50px;
+  font-size: 35px;
+  height: 35px;
+  width: 35px;
   border-radius: 100%;
   background-color: blue;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 .customRestaurantMarkerClusterIcon{
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 50px;
-  height: 50px;
-  width: 50px;
+  font-size: 35px;
+  height: 35px;
+  width: 35px;
   border-radius: 100%;
   background-color: green;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 .customGymMarkerClusterIcon{
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 50px;
-  height: 50px;
-  width: 50px;
+  font-size: 35px;
+  height: 35px;
+  width: 35px;
   border-radius: 100%;
   background-color: yellow;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 .customBarMarkerClusterIcon{
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 50px;
-  height: 50px;
-  width: 50px;
+  font-size: 35px;
+  height: 35px;
+  width: 35px;
   border-radius: 100%;
   background-color: red;
-  opacity: 0.8;
+  opacity: 0.6;
 }
