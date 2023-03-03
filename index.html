@@ -19,6 +19,8 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 
+<!--incorporate radio button or check box in search, and tidy up UI/UX & form validation. prepare readme file-->
+
 <body>
 
   <!-- carousel start-->
@@ -78,37 +80,94 @@
           <img src="img/singapore.png" class="mt-3 img-fluid" alt="singapore logo">
         </div>
 
-        <!-- information tab -->
-        <div id="information-tab">
-          <ul class="nav nav-tabs bg-white rounded-top" id="infoTab" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button class="nav-link active px-2" id="search-tab" data-bs-toggle="tab"
-                data-bs-target="#search-tab-pane" type="button" role="tab" aria-controls="search-tab-pane"
-                aria-selected="true">Search <i class="fa-soli fa-magnifying-glass"></i></button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link px-2" id="explore-tab" data-bs-toggle="tab" data-bs-target="#explore-tab-pane"
-                type="button" role="tab" aria-controls="explore-tab-pane" aria-selected="false">Explore <i
-                  class="fa-light fa-filter"></i></button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link px-2" id="weather-tab" data-bs-toggle="tab" data-bs-target="#weather-tab-pane"
-                type="button" role="tab" aria-controls="weather-tab-pane" aria-selected="false">Weather <i
-                  class="fa-solid fa-cloud-sun"></i></button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link px-2" id="collapse-tab" data-bs-toggle="tab" data-bs-target="#collapse-tab-pane"
-                type="button" role="tab" aria-controls="collapse-tab-pane" aria-selected="false"><i
-                  class="fa-solid fa-caret-down"></i></button>
-            </li>
-          </ul>
-        </div>
-      </div>
+        <!-- Search bar console -->
+        <div class="container-console">
+          <div class="console--search-bar">
+            <!-- Logo button -->
+            <button class="btn btn-sm btn-logo btn-light" data-bs-toggle="offcanvas" data-bs-target="#offcanvas"
+              aria-controls="offcanvas">
+              <img class="logo-img" src="img/singapore.png" alt="singapore logo">
+            </button>
+            <!-- Search input -->
+            <input type="text" class="form-control" id="searchValue" placeholder="Search mrt@SG">
+            <!-- Search button -->
+            <button id="btnSearch" class="btn btn-sm btn-light">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
 
-      <div class="tab-content bg-light">
+          </div>
+          <!-- Expandable drawer for search bar console -->
+          <div class="container-console--drawer">
+            <div class="console--drawer console--drawer-collapse" data-expand="false">
+              <!-- Display: Search result -->
+              <!-- Tabs to display various place-related information -->
+              <ul class="nav nav-tabs nav-justified tab tab--search" role="tablist">
+                <!-- Tab: MRT information (Default tab) -->
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="tab-museum" data-bs-toggle="tab" data-bs-target="#tab-mrt-content"
+                    type="button" role="tab" aria-controls="tab-mrt-content" aria-selected="true">Mrt Info</button>
+                </li>
+                <!-- Tab: Nearby information -->
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="tab-nearby" data-bs-toggle="tab" data-bs-target="#tab-nearby-content"
+                  type="button" role="tab" aria-controls="tab-nearby-content" aria-selected="false">Nearby
+                  Place</button>
+                </li>
+                <!-- Tab: Weather information -->
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="tab-weather" data-bs-toggle="tab" data-bs-target="#tab-weather-content"
+                    type="button" role="tab" aria-controls="tab-weather-content" aria-selected="false">Weather</button>
+                </li>
+              </ul>
 
-        <!-- search tab -->
-        <div class="tab-pane fade show active" id="search-tab-pane" role="tabpanel" aria-labelledby="search-tab"
+              <!-- Tab contents -->
+              <div class="tab-content tab tab--search">
+                <!-- Museum content -->
+                <div class="tab-pane fade show active" id="tab-museum-content" role="tabpanel"
+                  aria-labelledby="tab-museum">
+                  <div id="searchResult">
+                    <div class="container--content pt-3 ps-3">
+                      There is no result to show.
+                    </div>
+                  </div>
+                </div>
+                <!-- Nearby content -->
+                <div class="tab-pane fade" id="tab-nearby-content" role="tabpanel" aria-labelledby="tab-nearby">
+                  <div id="searchNearby">
+                    <div class="container--content pt-3 ps-3">
+                      There is no result to show.
+                    </div>
+                  </div>
+                </div>
+                <!-- Weather content -->
+                <div class="tab-pane fade" id="tab-weather-content" role="tabpanel" aria-labelledby="tab-weather">
+                  <div id="searchWeather">
+                    <div class="container--content pt-3 ps-3">
+                      <button id="weather-toggle" class="btn btn-warning">2-hour Forecast
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+           
+                  <!-- weather tab -->
+                  <!-- <div class="tab-pane fade" id="weather-tab-pane" role="tabpanel" aria-labelledby="weather-tab" tabindex="0">
+              <div class="col text-center pt-4 bg-light">
+                <div id="weather-forecast"></div>
+                <div class="pt-2">
+                  <button id="weather-toggle" class="btn btn-warning">2-hour Forecast
+                  </button>
+                </div>
+              </div>
+            </div> -->
+
+
+
+
+              <!-- <div class="tab-content bg-light"> -->
+
+              <!-- search tab -->
+              <!-- <div class="tab-pane fade show active" id="search-tab-pane" role="tabpanel" aria-labelledby="search-tab"
           tabindex="0">
           <div class="col p-2 bg-light">
             <div id="search-container" class="rounded-3">
@@ -124,58 +183,19 @@
               </div>
             </div>
           </div>
-
-        </div>
-
-        <!-- explore tab -->
-        <div class="tab-pane fade" id="explore-tab-pane" role="tabpanel" aria-labelledby="explore-tab" tabindex="0">
-          <div class="col px-5 py-3 bg-light">
-            <h4><strong>Explore Selections</strong></h4>
-            <div class="pt-2">
-              <input type="checkbox" name="MRTName" id="MRTId" checked /><img src="img/mrt.png" alt="MRT icon"
-                width="30" class="px-1" />MRT Station<br />
-            </div>
-            <div class="pt-2">
-              <input type="checkbox" name="restaurantName" id="restaurantId" checked /><img src="img/restaurant.png"
-                alt="restaurant icon" width="30" class="px-1" />Restaurant<br />
-            </div>
-            <div class="pt-2">
-              <input type="checkbox" name="gymName" id="gymId" checked /><img src="img/gym.png" alt="gym icon"
-                width="30" class="px-1" />Gym<br />
-            </div>
-            <div class="pt-2">
-              <input type="checkbox" name="barName" id="barId" checked /><img src="img/bar.png" alt="Bar icon"
-                width="30" class="px-1" />Bar<br />
-            </div>
-            <div>
-              <button id="btn-reset" class="btn btn-success float-end">Reset</button>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- weather tab -->
-        <div class="tab-pane fade" id="weather-tab-pane" role="tabpanel" aria-labelledby="weather-tab" tabindex="0">
-          <div class="col text-center pt-4 bg-light">
-            <div id="weather-forecast"></div>
-            <div class="pt-2">
-              <button id="weather-toggle" class="btn btn-warning">2-hour Forecast
-              </button>
-            </div>
-          </div>
-        </div>
+ </div> -->
 
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.3/axios.min.js"></script>
-        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
-          integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
-        <!-- leaflet.js-->
-        <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
-        <!--bootstrap-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-          crossorigin="anonymous"></script>
-        <script src="script.js"></script>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.3/axios.min.js"></script>
+              <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+                integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+              <!-- leaflet.js-->
+              <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
+              <!--bootstrap-->
+              <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                crossorigin="anonymous"></script>
+              <script src="script.js"></script>
 </body>
 
 </html>
