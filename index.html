@@ -122,9 +122,9 @@
 
               <!-- Tab contents -->
               <div class="tab-content tab tab--search">
-                <!-- Museum content -->
+                <!-- mrt content -->
                 <div class="tab-pane fade show active" id="tab-museum-content" role="tabpanel"
-                  aria-labelledby="tab-museum">
+                  aria-labelledby="tab-mrt">
                   <div id="searchResult">
                     <div class="container--content pt-3 ps-3">
                       There is no result to show.
@@ -135,7 +135,15 @@
                 <div class="tab-pane fade" id="tab-nearby-content" role="tabpanel" aria-labelledby="tab-nearby">
                   <div id="searchNearby">
                     <div class="container--content pt-3 ps-3">
-                      There is no result to show.
+                
+                        <input type="checkbox" id="restaurant-checkbox" name="restaurant-checkbox" value="restaurant" checked onclick="filterFunction(this)">
+                        <label for="restaurant-checkbox"> Restaurant</label><br>
+                        <input type="checkbox" id="bar-checkbox" name="bar-checkbox" value="bar" checked onclick="filterFunction(this)">
+                        <label for="bar-checkbox"> Bar</label><br>
+                        <input type="checkbox" id="gym-checkbox" name="gym-checkbox" value="gym" checked onclick="filterFunction(this)">
+                        <label for="gym-checkbox"> Gym</label><br><br>
+                      
+                      
                     </div>
                   </div>
                 </div>
