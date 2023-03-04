@@ -1,4 +1,5 @@
 let filters = ['restaurant', 'gym', 'bar'];
+let queryFilter = ['restaurant', 'gym', 'bar']
 
 let singapore = [1.3521, 103.8198] //start point change to singapore
 let map = L.map('map');
@@ -9,10 +10,20 @@ map.setView(singapore, 12);
 //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 // }).addTo(map);
 
-L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-	maxZoom: 20,
-	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+// L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+// 	maxZoom: 20,
+// 	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+// }).addTo(map);
+
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/dark-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoiYWxhbnNpYXBrMDMxNSIsImEiOiJjbGV0anBzcXYwM2RwM3Fxem51bXk5bmthIn0.y_gqZeRJdFFqfxkVarw2_Q' //demo access token
 }).addTo(map);
+
 
 function getRandomLatLng(map) {
     // get the boundaries of the map
@@ -34,10 +45,10 @@ const foursquare = {
     API_KEY: "fsq331OlQJLkuEtpOYZ/Wc3NNCUSfvlqMjdOpXhmXzYtnsg=",
     URL: "https://api.foursquare.com/v3/places/search",
     categories: {
-        mrt: 19046,
-        gym: 18021,
-        restaurant: 13065,
-        bar: 13003
+        mrt: "19046",
+        gym: "18021",
+        restaurant: "13065",
+        bar: "13003"
     },
     centerpoint: singapore,
 
@@ -94,6 +105,9 @@ let barLayer = L.markerClusterGroup({
 
 let searchRadiusLayer = L.layerGroup().addTo(map);
 
+let queryRestaurantLayer = L.layerGroup().addTo(map);
+let queryBarLayer = L.layerGroup().addTo(map);
+let queryGymLayer = L.layerGroup().addTo(map);
 
 
 // add the layers to the map
@@ -182,78 +196,79 @@ async function main() {
 
 
     //restaurant
-    if (filters.includes('restaurant')) {
-        let restaurantResponse = await axios.get(foursquare.URL, {
-            "headers": {
-                "Accept": "application/json",
-                "Authorization": foursquare.API_KEY
-            },
-            "params": {
-                "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
-                "catagories": foursquare.categories.restaurant,
-                "radius": 40000,
-                "limit": 25,
-                "sort": "distance"
-            }
-        });
 
-        for (let restaurant of restaurantResponse.data.results) {
-            let restaurantMarker = L.marker([restaurant.geocodes.main.latitude, restaurant.geocodes.main.longitude], { icon: restaurantIcon });
-
-            restaurantMarker.bindPopup(`<h1>${restaurant.name}</h1>`)
-            restaurantMarker.addTo(restaurantLayer);
+    let restaurantResponse = await axios.get(foursquare.URL, {
+        "headers": {
+            "Accept": "application/json",
+            "Authorization": foursquare.API_KEY
+        },
+        "params": {
+            "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
+            "categories": foursquare.categories.restaurant,
+            "radius": 40000,
+            "limit": 1,
+            "sort": "distance"
         }
+    });
+
+    for (let restaurant of restaurantResponse.data.results) {
+        let restaurantMarker = L.marker([restaurant.geocodes.main.latitude, restaurant.geocodes.main.longitude], { icon: restaurantIcon });
+
+        restaurantMarker.bindPopup(`<h1>${restaurant.name}</h1>`)
+        restaurantMarker.addTo(restaurantLayer);
     }
+
 
 
     //gym
-    if (filters.includes('gym')) {
-        let gymResponse = await axios.get(foursquare.URL, {
-            "headers": {
-                "Accept": "application/json",
-                "Authorization": foursquare.API_KEY
-            },
-            "params": {
-                "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
-                "categories": foursquare.categories.gym,
-                "radius": 40000,
-                "limit": 25,
-                "sort": "distance"
-            }
-        });
 
-        for (let gym of gymResponse.data.results) {
-            let gymMarker = L.marker([gym.geocodes.main.latitude, gym.geocodes.main.longitude], { icon: gymIcon });
-
-            gymMarker.bindPopup(`<h1>${gym.name}</h1>`);
-            gymMarker.addTo(gymLayer);
+    let gymResponse = await axios.get(foursquare.URL, {
+        "headers": {
+            "Accept": "application/json",
+            "Authorization": foursquare.API_KEY
+        },
+        "params": {
+            "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
+            "categories": foursquare.categories.gym,
+            "radius": 40000,
+            "limit": 1,
+            "sort": "distance"
         }
+    });
+
+    for (let gym of gymResponse.data.results) {
+        let gymMarker = L.marker([gym.geocodes.main.latitude, gym.geocodes.main.longitude], { icon: gymIcon });
+
+        gymMarker.bindPopup(`<h1>${gym.name}</h1>`);
+        gymMarker.addTo(gymLayer);
     }
+
 
     //bar
-    if (filters.includes('bar')) {
-        let barResponse = await axios.get(foursquare.URL, {
-            "headers": {
-                "Accept": "application/json",
-                "Authorization": foursquare.API_KEY
-            },
-            "params": {
-                "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
-                "categories": foursquare.categories.bar,
-                "radius": 40000,
-                "limit": 25,
-                "sort": "distance"
-            }
-        });
 
-
-        for (let bar of barResponse.data.results) {
-            let barMarker = L.marker([bar.geocodes.main.latitude, bar.geocodes.main.longitude], { icon: barIcon });
-
-            barMarker.bindPopup(`<h1>${bar.name}</h1>`);
-            barMarker.addTo(barLayer);
+    let barResponse = await axios.get(foursquare.URL, {
+        "headers": {
+            "Accept": "application/json",
+            "Authorization": foursquare.API_KEY
+        },
+        "params": {
+            "ll": foursquare.centerpoint[0] + ',' + foursquare.centerpoint[1],
+            "categories": foursquare.categories.bar,
+            "radius": 40000,
+            "limit": 1,
+            "sort": "distance"
         }
+    });
+
+
+    for (let bar of barResponse.data.results) {
+        let barMarker = L.marker([bar.geocodes.main.latitude, bar.geocodes.main.longitude], { icon: barIcon });
+
+        barMarker.bindPopup(`<h1>${bar.name}</h1>`);
+        // barMarker.bindPopup(markerContent(bar));
+        barMarker.addTo(barLayer);
     }
+
 
 
 
@@ -384,7 +399,7 @@ async function main() {
     document.querySelector("#btnSearch").addEventListener("click", async function () {
         let searchValue = document.querySelector('#searchValue').value;
         console.log(searchValue);
-    
+
         // search mrt result
         let searchResponse = await axios.get(foursquare.URL, {
             "headers": {
@@ -394,18 +409,123 @@ async function main() {
             "params": {
                 "ll": singapore[0] + ',' + singapore[1],
                 // "categories": foursquare.categories.mrt,
-                "radius": 30000,
+                "radius": 50000,
                 "limit": 1,
                 "query": searchValue
             },
-    
+
         });
-    
+
         console.log(searchResponse.data);
-    
-    
+
+
         let searchPoint = [searchResponse.data.results[0].geocodes.main.latitude, searchResponse.data.results[0].geocodes.main.longitude]
-    
+
+        //-----------------------------------
+        const checkboxes = document.querySelectorAll(".filterCheckBox");
+        for (let checkbox of checkboxes) {
+            checkbox.addEventListener('change', async function () {
+                const checkboxName = checkbox.name;
+
+                console.log('this is the search checkbox', checkboxName, checkbox.checked);
+                // console.log(foursquare);
+                // if unchecked, clear that layer
+                if (!checkbox.checked) {
+                    if (checkboxName == 'restaurant-checkbox') {
+                        queryRestaurantLayer.clearLayers();
+                    }
+                    else if (checkboxName == 'bar-checkbox') {
+                        queryBarLayer.clearLayers();
+                    }
+                    else if (checkboxName == 'gym-checkbox') {
+                        queryGymLayer.clearLayers();
+                    }
+                }
+                else {
+                    // add back the markers
+
+                    if (checkboxName == 'restaurant-checkbox') {
+                        console.log("restaurant 13065", foursquare.categories.restaurant);
+                        console.log(searchPoint[0] + ',' + searchPoint[1]);
+                        let restaurantResponse = await axios.get(foursquare.URL, {
+                            "headers": {
+                                "Accept": "application/json",
+                                "Authorization": foursquare.API_KEY
+                            },
+                            "params": {
+                                "ll": searchPoint[0] + ',' + searchPoint[1],
+                                "categories": foursquare.categories.restaurant,
+                                "radius": 3000,
+                                "limit": 10,
+                                "sort": "distance"
+                            }
+                        });
+
+                        console.log("restaurant",restaurantResponse.data.results)
+                        for (let restaurant of restaurantResponse.data.results) {
+                            let restaurantMarker = L.marker([restaurant.geocodes.main.latitude, restaurant.geocodes.main.longitude], { icon: restaurantIcon });
+
+                            restaurantMarker.bindPopup(`<h1>${restaurant.name}</h1>`)
+                            restaurantMarker.addTo(queryRestaurantLayer);
+                        }
+                    }
+
+                    else if (checkboxName == 'gym-checkbox') {
+                        console.log("gym 18021", foursquare.categories.gym);
+                        console.log(searchPoint[0] + ',' + searchPoint[1]);
+                        let gymResponse = await axios.get(foursquare.URL, {
+                            "headers": {
+                                "Accept": "application/json",
+                                "Authorization": foursquare.API_KEY
+                            },
+                            "params": {
+                                "ll": searchPoint[0] + ',' + searchPoint[1],
+                                "categories": foursquare.categories.gym,
+                                "radius": 3000,
+                                "limit": 10,
+                                "sort": "distance"
+                            }
+                        });
+                        console.log("gym",gymResponse.data.results)
+
+                        for (let gym of gymResponse.data.results) {
+                            let gymMarker = L.marker([gym.geocodes.main.latitude, gym.geocodes.main.longitude], { icon: gymIcon });
+
+                            gymMarker.bindPopup(`<h1>${gym.name}</h1>`)
+                            gymMarker.addTo(queryGymLayer);
+                        }
+                    }
+                    else if (checkboxName == 'bar-checkbox') {
+                        console.log("bar 13003", foursquare.categories.bar);
+                        console.log(searchPoint[0] + ',' + searchPoint[1]);
+                        let barResponse = await axios.get(foursquare.URL, {
+                            "headers": {
+                                "Accept": "application/json",
+                                "Authorization": foursquare.API_KEY
+                            },
+                            "params": {
+                                "ll": searchPoint[0] + ',' + searchPoint[1],
+                                "categories": foursquare.categories.bar,
+                                "radius": 3000,
+                                "limit": 10,
+                                "sort": "distance"
+
+                            }
+                        });
+                        console.log("bar",barResponse.data.results)
+
+                        for (let bar of barResponse.data.results) {
+                            let barMarker = L.marker([bar.geocodes.main.latitude, bar.geocodes.main.longitude], { icon: barIcon });
+
+                            barMarker.bindPopup(`<h1>${bar.name}</h1>`)
+                            barMarker.addTo(queryBarLayer);
+                        }
+                    }
+                }
+            })
+        }
+        //-----------------------------------
+
         // call bar, restaurant, gym apis using searchpoint
         //restaurant
         let restaurantRequest = axios.get(foursquare.URL, {
@@ -415,13 +535,13 @@ async function main() {
             },
             "params": {
                 "ll": searchPoint.join(','),
-                "catagories": foursquare.categories.restaurant,
-                "radius": 1000, // can allow user to choose how big the search radius around selected MRT
+                "categories": foursquare.categories.restaurant,
+                "radius": 3000, // can allow user to choose how big the search radius around selected MRT
                 "limit": 10,
                 "sort": "distance"
             }
         });
-    
+
         //bar
         let barRequest = axios.get(foursquare.URL, {
             "headers": {
@@ -431,12 +551,12 @@ async function main() {
             "params": {
                 "ll": searchPoint.join(','),
                 "categories": foursquare.categories.bar,
-                "radius": 1000,
+                "radius": 3000,
                 "limit": 10,
                 "sort": "distance"
             }
         });
-    
+
         //gym
         let gymRequest = axios.get(foursquare.URL, {
             "headers": {
@@ -446,44 +566,44 @@ async function main() {
             "params": {
                 "ll": searchPoint.join(','),
                 "categories": foursquare.categories.gym,
-                "radius": 1000,
+                "radius": 3000,
                 "limit": 10,
                 "sort": "distance"
             }
         });
-    
+
         let restaurantResponse = await restaurantRequest;
         let barResponse = await barRequest;
         let gymResponse = await gymRequest;
-    
-        if (filters.includes('restaurant')) {
-            for (let restaurant of restaurantResponse.data.results) {
-                let restaurantMarker = L.marker([restaurant.geocodes.main.latitude, restaurant.geocodes.main.longitude], { icon: restaurantIcon });
-        
-                restaurantMarker.bindPopup(`<h1>${restaurant.name}</h1>`)
-                restaurantMarker.addTo(restaurantLayer);
-            }
+
+
+        for (let restaurant of restaurantResponse.data.results) {
+            let restaurantMarker = L.marker([restaurant.geocodes.main.latitude, restaurant.geocodes.main.longitude], { icon: restaurantIcon });
+
+            restaurantMarker.bindPopup(`<h1>${restaurant.name}</h1>`)
+            restaurantMarker.addTo(queryRestaurantLayer);
         }
-    
-        if (filters.includes('bar')) {
-            for (let bar of barResponse.data.results) {
-                let barMarker = L.marker([bar.geocodes.main.latitude, bar.geocodes.main.longitude], { icon: barIcon });
-        
-                barMarker.bindPopup(`<h1>${bar.name}</h1>`);
-                barMarker.addTo(barLayer);
-            }
+
+
+
+        for (let bar of barResponse.data.results) {
+            let barMarker = L.marker([bar.geocodes.main.latitude, bar.geocodes.main.longitude], { icon: barIcon });
+
+            barMarker.bindPopup(`<h1>${bar.name}</h1>`);
+            barMarker.addTo(barLayer);
         }
-    
+
+
         // let testLayer = L.layerGroup().addTo(map);
-        if (filters.includes('gym')) {
-            for (let gym of gymResponse.data.results) {
-                let gymMarker = L.marker([gym.geocodes.main.latitude, gym.geocodes.main.longitude], { icon: gymIcon });
-        
-                gymMarker.bindPopup(`<h1>${gym.name}</h1>`);
-                gymMarker.addTo(gymLayer);
-                // gymMarker.addTo(searchGymLayer);
-            }
+
+        for (let gym of gymResponse.data.results) {
+            let gymMarker = L.marker([gym.geocodes.main.latitude, gym.geocodes.main.longitude], { icon: gymIcon });
+
+            gymMarker.bindPopup(`<h1>${gym.name}</h1>`);
+            gymMarker.addTo(gymLayer);
+            // gymMarker.addTo(searchGymLayer);
         }
+
 
         searchRadiusLayer.clearLayers();
         // Display search radius
@@ -493,7 +613,7 @@ async function main() {
             fillOpacity: 0.4,
             radius: 500 // change according to user selected radius
         }).addTo(searchRadiusLayer);
-    
+
         console.log(searchPoint);
         console.log(barResponse.data.results);
         console.log(restaurantResponse.data.results);
@@ -503,31 +623,48 @@ async function main() {
         // main();
 
 
-    
+
     });
 
 }
 
 main();
 
-function filterFunction(e) {
-    if (e.checked) {
-        // selected logic
-        filters.push(e.value) // ['bar', 'gym']
-        main()
+// function filterFunction(e) {
+//     if (e.checked) {
+//         // selected logic
+//         filters.push(e.value) // ['bar', 'gym']
+//         main()
 
-    } else {
-        // unselected logic
-        filters = filters.filter(o => o !== e.value)
+//     } else {
+//         // unselected logic
+//         filters = filters.filter(o => o !== e.value)
 
-        // filter(o => o !== e.value)
+//         // filter(o => o !== e.value)
 
-        // filter(o) {
-        //     return o !== e.value
-        // }
+//         // filter(o) {
+//         //     return o !== e.value
+//         // }
+//         main()
+//     }
+// }
 
 
 
-        main()
-    }
-}
+
+// function markerContent(place){
+//     const placeId = place.fsq_id;
+//     const placePhotoAPIUrl = `https//api.foursquare.com/v3/places/${placeId}/photos`;
+//     const placeName = place.name;
+
+//     const placePhoto = axios.get(placePhotoAPIUrl, {
+//         limit: 1
+//     }, {
+//         'headers': {
+//             'Authorization': foursquare.API_KEY
+//         }
+//     }).then(result => result[0].prefix + 'original' + result[0].suffix);
+
+//     return `<h1>${placeName}</h1>
+//             <img src=${placePhoto} /> `
+// }

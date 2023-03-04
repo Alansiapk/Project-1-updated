@@ -110,6 +110,11 @@ html {
 
 /* --- Search Bar Components --- */
 /* Search bar */
+
+.container-console {
+  width: 50%;
+  display: flex;
+}
 .console--search-bar {
   width: 100%;
   display: flex;
