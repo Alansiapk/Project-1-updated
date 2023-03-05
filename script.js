@@ -392,7 +392,17 @@ function emailListeners(){
 })
 }
 
+let mapDiv = document.querySelector('#mapDiv');
+let landingPageDiv = document.querySelector('#landingPageDiv');
+document.querySelector('#btn-get-started').addEventListener('click', function () {
+    landingPageDiv.classList.add('hidden');
+    mapDiv.classList.remove('hidden');
+})
 
+document.querySelector('#logo').addEventListener('click', function () {
+    landingPageDiv.classList.remove('hidden');
+    mapDiv.classList.remove('hidden');
+})
 
 
 
