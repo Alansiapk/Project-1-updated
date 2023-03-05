@@ -8,6 +8,17 @@ html {
   height: 100vh;
 }
 
+.hidden {
+  transform: translateY(-100%);
+}
+
+#landingPageDiv,
+#mapDiv {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
 #landing-page-box {
   position: absolute;
   top: 200px;
@@ -15,8 +26,36 @@ html {
   margin-right: auto;
   left: 0;
   right: 0;
-  background-color: lightblue;
-  opacity: 0.8;
+
+}
+
+.carousel-item img {
+  object-fit: cover;
+  object-position: center;
+  height: 100vh;
+}
+
+.drk:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #000;
+  opacity: 0.5;
+}
+
+#email-subscribe {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 150px;
+  width: auto;
 }
 
 #map {
@@ -107,19 +146,6 @@ html {
   left: 50%;
   transform: translateX(-50%);
 }
-
-/* --- Search Bar Components --- */
-/* Search bar */
-
-.container-console {
-  width: 50%;
-  display: flex;
-}
-.console--search-bar {
-  width: 100%;
-  display: flex;
-}
-
 
 
 /* Logo Button */

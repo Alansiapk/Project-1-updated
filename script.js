@@ -154,6 +154,7 @@ initializeLayers();
 addLayersToMap();
 loadWeatherData();
 initializeListeners();
+emailListeners();
 
 //step 1 InitializeMap
 function initializeMap() {
@@ -368,6 +369,27 @@ function search(searchPoint, category, radius, limit, sort) {
             "sort": sort
         },
     })
+}
+
+//validation
+
+function emailListeners(){
+    document.querySelector('#email-submit').addEventListener('click', function () {
+    let isEmailInvalid = false;
+    let email = document.querySelector('#txt-email').value;
+
+    if (!email.includes('@') || !email.includes('.')) {
+        isEmailInvalid = true;
+    }
+
+    if (isEmailInvalid) {
+        document.querySelector('#txtEmailError').innerHTML = `<small>Please enter a valid email</small>`;
+        document.querySelector('#txtEmailError').style.color = "red";
+    }
+    else {
+        document.querySelector('#txtEmailError').innerHTML = "";
+    }
+})
 }
 
 
