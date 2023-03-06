@@ -8,7 +8,7 @@ html {
   height: 100vh;
 }
 
-.hidden {
+.non {
   transform: translateY(-100%);
 }
 
@@ -47,15 +47,30 @@ html {
   opacity: 0.5;
 }
 
-#email-subscribe {
+#email-notify {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
-  left: 0px;
+  bottom: 1px;
+  right: 1px;
+  left: 1px;
   margin-left: auto;
   margin-right: auto;
-  height: 150px;
+  height: 110px;
   width: auto;
+}
+
+@media (min-width: 576px) {
+  #email-notify {
+      position: absolute;
+      bottom: 25px;
+      right: 25px;
+      left: auto;
+      height: 110px;
+      width: 460px;
+  }
+
+  #txt-email {
+      width: 140px;
+  }
 }
 
 #map {
@@ -123,65 +138,36 @@ html {
   opacity: 0.6;
 }
 
-.console--search-bar .logo-img {
-  width: 35px;
-}
 /* Search input field */
 
 /* --- Search Console Components --- */
 .container-console {
-  width: 95vw;
+  width: 50vw;
   z-index: 314160;
   background-color: #ededed;
-  padding: 5px;
-  border-radius: 10px;
-  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 2px 6px 2px rgba(60, 64, 67, 0.15);
-
+  padding: 6px;
+  border-radius: 9px;
   display: flex;
   flex-direction: column;
   gap: 2px;
-
   position: absolute;
-  top: 20px;
-  left: 50%;
+  top: 90px;
+  left: 27%;
   transform: translateX(-50%);
+  opacity:0.8;
 }
 
 
-/* Logo Button */
-.btn-logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 /* Logo */
 .console--search-bar .logo-img {
   width: 35px;
 }
 
-/* Search input field */
-#txtSearch {
-  min-width: 0px;
-  background-color: rgba(237, 237, 237, 1);
-  border: 1px solid rgb(255, 255, 255);
-  border-radius: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  flex: 1;
-}
-
-#txtSearch:focus-visible {
-  outline: none;
-}
-
 /* Search Button */
 #btnSearch {
-  width: 42px;
-  color: #6e7587;
+  width: 40px;
+  color: #2ca224;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
