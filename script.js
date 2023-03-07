@@ -47,7 +47,7 @@ function initializeMap() {
 
 //step 2 InitializeLayers
 function initializeLayers() {
-    MRTLayer = L.layerGroup({
+    MRTLayer = L.markerClusterGroup({
         iconCreateFunction: function (cluster) {
             return L.divIcon({
                 html: `<div class="customMRTMarkerClusterIcon">
@@ -278,8 +278,23 @@ document.querySelector('#logo').addEventListener('click', function () {
     mapDiv.classList.remove('non');
 })
 
+// find teh X button
+const collapseButton = document.querySelector("#collapse-options");
 
-
+// when the button is clicked,
+collapseButton.addEventListener('click', () => {
+    // find the HTML element that has all the mrt-tab, gym-tab, bar-tab
+    // this is the parent
+    const tabs = document.querySelector(".tab-content");
+    // find all the individual panes
+    const activePane = tabs.querySelector(".tab-pane.active.show");
+    activePane.classList.remove("active");
+    const buttons = document.querySelectorAll(".nav-item button");
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+        buttons[i]["aria-selected"] = false;
+    }
+})
 
 
 

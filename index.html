@@ -106,22 +106,23 @@
 
         <!-- Search bar console -->
         
-        <div class="container-console">
+        <div class="container-console" id="search-container">
           <div class="console--search-bar">
     
             <!-- Search input -->
+            
             <input type="text" class="form-control" id="searchValue" placeholder="Search mrt@SG">
             <!-- Search button -->
             <button id="btnSearch" class="btn btn-sm btn-light">
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
+            <button id="collapse-options" class="btn btn-sm btn-success">X</button>
 
           </div>
-          <!-- Expandable drawer for search bar console -->
+          
           <div class="container-console--drawer">
             <div class="console--drawer console--drawer-collapse" data-expand="false">
-              <!-- Display: Search result -->
-              <!-- Tabs to display various place-related information -->
+             
               <ul class="nav nav-tabs nav-justified tab tab--search" role="tablist">
 
                 <!-- Tab: Nearby information -->
@@ -129,7 +130,7 @@
                   <button class="nav-link" id="tab-nearby" data-bs-toggle="tab" data-bs-target="#tab-nearby-content"
                     type="button" role="tab" aria-controls="tab-nearby-content" aria-selected="false">Nearby
                     Place</button>
-                </li>
+                </li> 
                 <!-- Tab: Weather information -->
                 <li class="nav-item" role="presentation">
                   <button class="nav-link" id="tab-weather" data-bs-toggle="tab" data-bs-target="#tab-weather-content"
@@ -153,15 +154,15 @@
 
                       <input class="filterCheckBox" type="checkbox" id="restaurant-checkbox" name="restaurant-checkbox"
                         value="restaurantValue" checked>
-                      <img src="img/restaurant.png" alt="restaurant icon" width="30" class="px-1" style="width:50px" />
+                      <img src="img/restaurant.png" alt="restaurant icon" width="25" class="px-1" style="width:50px" />
                       Restaurant</label><br>
                       <input class="filterCheckBox" type="checkbox" id="bar-checkbox" name="bar-checkbox"
                         value="barValue" checked>
-                      <img src="img/bar.png" alt="bar icon" width="30" class="px-1" style="width:50px" />
+                      <img src="img/bar.png" alt="bar icon" width="25" class="px-1" style="width:50px" />
                       Bar</label><br>
                       <input class="filterCheckBox" type="checkbox" id="gym-checkbox" name="gym-checkbox"
                         value="gymValue" checked>
-                      <img src="img/gym.png" alt="gym icon" width="30" class="px-1" style="width:50px" />
+                      <img src="img/gym.png" alt="gym icon" width="25" class="px-1" style="width:50px" />
                       Gym</label><br>
 
 

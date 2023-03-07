@@ -90,6 +90,59 @@ html {
   left: 60px;
 }
 
+/* .customMRTMarkerClusterIcon{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px;
+  height: 35px;
+  width: 35px;
+  border-radius: 100%;
+  background-color: blue;
+  opacity: 0.6;
+} */
+
+/* @media (min-width: 576px) {
+  .customRestaurantMarkerClusterIcon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 35px;
+    height: 35px;
+    width: 35px;
+    border-radius: 100%;
+    background-color: green;
+    opacity: 0.6;
+  }
+  
+  .customGymMarkerClusterIcon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 35px;
+    height: 35px;
+    width: 35px;
+    border-radius: 100%;
+    background-color: yellow;
+    opacity: 0.6;
+  }
+  
+  .customBarMarkerClusterIcon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 35px;
+    height: 35px;
+    width: 35px;
+    border-radius: 100%;
+    background-color: red;
+    opacity: 0.6;
+  }
+   
+} */
+  
+  
+
 .customMRTMarkerClusterIcon{
   display: flex;
   justify-content: center;
@@ -101,7 +154,6 @@ html {
   background-color: blue;
   opacity: 0.6;
 }
-
 .customRestaurantMarkerClusterIcon{
   display: flex;
   justify-content: center;
@@ -171,3 +223,8 @@ html {
 
 }
 
+/* @media screen and (min-width: 375px) {
+  #search-container {
+    display: block;
+  }
+} */
