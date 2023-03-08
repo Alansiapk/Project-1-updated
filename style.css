@@ -3,13 +3,12 @@ html {
   width: 100%;
 }
 
-body{
-  font-family: 'Roboto', sans-serif;
-}
+
 
 #main {
   position: relative;
   height: 100vh;
+  /* font-family: 'Roboto', sans-serif; */
 }
 
 .non {
@@ -21,6 +20,7 @@ body{
     position: absolute;
     height: 100%;
     width: 100%;
+    font-family: 'Roboto', sans-serif;
 }
 
 #landing-page-box {
@@ -194,6 +194,15 @@ body{
   opacity: 0.6;
 }
 
+@media screen and (max-width:390px){
+  .leaflet-marker-icon{
+    height: 25px !important;
+    width: 25px !important;
+    border-radius: 50% !important;
+  }
+  
+}
+
 /* Search input field */
 
 /* --- Search Console Components --- */
@@ -223,7 +232,7 @@ body{
 /* Search Button */
 #btnSearch {
   width: 40px;
-  color: #2ca224;
+  color: #00b48a;
 
 }
 
