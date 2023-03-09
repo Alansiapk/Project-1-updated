@@ -42,6 +42,10 @@ Users want to know where they can hang out. The app provides the names and locat
 | I want to know the current weather condition.| Feature to show 2hr weather nowcast in the map |
 | I want to easily find food nearby and not walk too far after visiting an attraction. | Feature to show nearest places sorted by distance from MRT  |
 
+### Wireframe
+
+![wirefram](/img/wireframe.png)
+
 ### Color Reference
 
 Landing page with dim image and map with dark mode in order to let user find reading easier in low light with less eye strain. Also it will brighten below color code for main landing page "Search Now", "Notify Me" and map page search logo.
