@@ -92,6 +92,10 @@ The colors of all icons and markers are selected to match the dim & dark scheme 
 9. [Font Awesome](https://fontawesome.com/icons) to input icons
 10. [Google Fonts](https://fonts.google.com/) to select font family
 
+## Testing
+
+Detailed test cases for the app can be found [here](img/testingfinal.png).
+
 ## Deployment
 
 The web application is hosted using [Netlify](https://www.netlify.com/), deployed directly from the main branch of this GitHub repository. For the detailed deployment steps, you may refer [here](https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/).
@@ -105,5 +109,5 @@ The web application is hosted using [Netlify](https://www.netlify.com/), deploye
 - (http://www.weather.gov.sg/weather-forecast-2hrnowcast-2/) for getting API and promise functions
 
 
-
+s
 
