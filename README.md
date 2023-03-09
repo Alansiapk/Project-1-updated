@@ -1,9 +1,9 @@
 
 # Happy Commuter
 
+![mobile-responsiveness](/img/mobileres.png)
 
-
-The live demo of the website can be accessed "here"
+The live demo of the website can be accessed [here](https://happy-commuter-mrt.netlify.app/)
 
 ## Project Summary
 

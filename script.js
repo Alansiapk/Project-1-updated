@@ -245,7 +245,7 @@ function search(searchPoint, category, radius, limit, sort) {
     })
 }
 
-//validation
+//validation email
 
 function emailListeners(){
     document.querySelector('#email-submit').addEventListener('click', function () {
@@ -266,6 +266,7 @@ function emailListeners(){
 })
 }
 
+//change page between landing page and map
 let mapDiv = document.querySelector('#mapDiv');
 let landingPageDiv = document.querySelector('#landingPageDiv');
 document.querySelector('#btn-get-started').addEventListener('click', function () {
